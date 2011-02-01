@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <script type="text/javascript" src="FractalViewer.js"></script>
+    <style type="text/css">
+      #controls {
+        position:absolute;
+        top:3px;
+        left:3px;
+        background-color:rgba(0,128,0,0.75);
+        border:2px solid #00CC00;
+        border-radius: 7px;
+        -moz-border-radius: 7px;
+        padding:2px 7px;
+        font-family:Monaco;
+        font-size:10;
+      }
+      #controls a {
+        color:black;
+        text-decoration:none;
+      }
+      #controlToggler {                
+        color:black;
+        text-decoration:none;
+      }
+      #controlsForm {
+        display:none;
+        margin-left:10px;
+      }
+    </style>
+    <script type="text/javascript">
+      var fractalViewer;
+      var mouseX, mouseY;
+      var dragging = false;
+
+      function init() {
+        fractalViewer = new FractalViewer();
+
+        var iterControl = document.getElementById('iterControl');
+        var updateButton = document.getElementById('updateFractalViewer');
+        var controlToggler = document.getElementById('controlToggler');
+        var controlsForm = document.getElementById('controlsForm');
+        var canvas = document.getElementById('fractalViewerCanvas');
+
+        window.onresize = function(e) {fractalViewer.reshape();};
+
+        controlToggler.onlick = toggleControlsForm;
+
+        controlsForm.onsubmit = function(){updateFractalViewer();return false;};
+
+        canvas.onmousedown = function(e){
+          mouseX = e.pageX;
+          mouseY = e.pageY;
+          dragging = true;
+        };
+        canvas.onmousemove = function(e){
+          if(dragging) {
+            var dx = mouseX - e.pageX;
+            var dy = mouseY - e.pageY;
+            mouseX = e.pageX;
+            mouseY = e.pageY;
+            fractalViewer.pixelDrag(dx, dy);
+          }
+        };
+        canvas.onmouseup = function(e){
+          dragging = false;
+        };
+
+        // For webkit
+        canvas.onmousewheel = function(e){
+          fractalViewer.zoom(Math.min(Math.max(1+e.wheelDelta/100,0.7),1.3));
+          return false;
+        };
+
+        // For firefox
+        if(window.addEventListener) {
+          window.addEventListener('DOMMouseScroll',function(e){
+            // firefox's e.detail appears to use the opposite direction
+            e.wheelDelta = -e.detail;
+            canvas.onmousewheel(e);
+          }, true);
+        }
+        updateFractalViewer();
+      }
+
+      function updateFractalViewer() {
+        var maxI = parseInt(document.getElementById('iterControl').value);
+        fractalViewer.maxI = maxI;
+        //var cyclingEnabled = document.getElementById('cycleColorsCheckbox').checked;
+        //if(cyclingEnabled) {
+        fractalViewer.colorCycle = parseInt(document.getElementById('cycleColorsPeriod').value);;
+        //}else{
+        //    fractalViewer.colorCycle = null;
+        //}
+        fractalViewer.colorPhase = parseFloat(document.getElementById('cycleColorsPhase').value);
+        fractalViewer.smoothColors = document.getElementById('smoothColors').checked;
+        //console.log(fractalViewer.colorPhase);
+        fractalViewer.reshape();
+        return false;
+      }
+
+      function toggleControlsForm() {
+        var controlsForm = document.getElementById('controlsForm');
+        var controlToggler = document.getElementById('controlToggler');
+        if(!controlsForm.style.display){
+          controlToggler.innerHTML = "-controls";
+          controlsForm.style.display = 'block';
+        }else{
+          controlToggler.innerHTML = "+controls";
+          controlsForm.style.display = '';
+        }
+      }
+
+      function exportToPNG() {
+        var canvas = document.getElementById('fractalViewerCanvas');
+        return canvas.toDataURL('image/png');
+      }
+
+    </script>
+  </head>
+  <body onload="init();">
+    <canvas id="fractalViewerCanvas" >Browser does not support canvas.</canvas>
+    <div id="controls">
+      <a href="javascript:toggleControlsForm();" id="controlToggler">+controls</a>
+      <form id="controlsForm">
+        <a href="javascript:window.open(exportToPNG(),'_newtab');">export_to_png</a>
+        <br/><br/>
+        <input id="iterControl" value="500" min="1" step="1" size="6" type="number"/>
+        <label for="iterControl">max_iterations</label>
+        <br/>
+
+        <input id="cycleColorsPeriod" type="number" min="1" step="1" size="6" value="10" />
+        <label for="cycleColorsPeriod">cycle_period</label>
+        <br/>
+        <input id="cycleColorsPhase" type="number" min="0" max="1" step="0.05" size="6" value="0" />
+        <label for"cycleColorsPhase">cycle_phase</label>
+        <br/>
+        <input id="smoothColors" type="checkbox" checked="checked"/><label for="smoothColors">smooth_finish</label>
+        <br/>
+
+        <input id="updateFractalViewer" type="submit" value="Update"/>
+        <br/>
+
+      </form>
+    </div>
+
+  </body>
+</html>
