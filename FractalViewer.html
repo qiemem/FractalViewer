@@ -67,7 +67,7 @@
 
         // For webkit
         canvas.onmousewheel = function(e){
-          fractalViewer.zoom(Math.min(Math.max(1+e.wheelDelta/100,0.7),1.3));
+          fractalViewer.zoom(Math.min(Math.max(1-e.wheelDelta/100,0.7),1.3));
           return false;
         };
 
