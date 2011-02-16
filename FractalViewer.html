@@ -62,7 +62,7 @@
 
                 window.onresize = function(e) {
                     fractalViewer.reshape();
-                    updateHash();
+                    scheduleUpdateHash();
                 };
 
                 controlToggler.onlick = toggleControlsForm;
@@ -81,7 +81,7 @@
                         mouseX = e.pageX;
                         mouseY = e.pageY;
                         fractalViewer.pixelDrag(dx, dy);
-                        updateHash();
+                        scheduleUpdateHash();
                     }
                 };
                 canvas.onmouseup = function(e){
@@ -91,7 +91,7 @@
                 // For webkit
                 canvas.onmousewheel = function(e){
                     fractalViewer.zoom(Math.min(Math.max(1-e.wheelDelta/100,0.7),1.3));
-                    updateHash();
+                    scheduleUpdateHash();
                     return false;
                 };
 
@@ -122,6 +122,11 @@
                 updateHash();
                 fractalViewer.reshape();
                 return false;
+            }
+
+            function scheduleUpdateHash() {
+                clearTimeout(this.timeoutId);
+                this.timeoutId = setTimeout(updateHash, 100);
             }
 
             function updateHash() {
