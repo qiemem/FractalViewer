@@ -65,7 +65,7 @@
                     scheduleUpdateHash();
                 };
 
-                controlToggler.onlick = toggleControlsForm;
+                controlToggler.onclick = toggleControlsForm;
 
                 controlsForm.onsubmit = function(){updateFractalViewer();return false;};
 
@@ -189,7 +189,7 @@
     <body onload="init();">
         <canvas id="fractalViewerCanvas" >Browser does not support canvas.</canvas>
         <div id="controls">
-            <a href="javascript:toggleControlsForm();" id="controlToggler">+controls</a>
+            <a href="#" id="controlToggler">+controls</a>
             <form id="controlsForm">
                 <a href="javascript:window.open(exportToPNG(),'_newtab');">export_to_png</a>
                 <br/><br/>
