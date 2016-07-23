@@ -18,7 +18,7 @@
                 color:black;
                 text-decoration:none;
             }
-            #controlToggler {                
+            #controlToggler {
                 color:black;
                 text-decoration:none;
             }
@@ -65,7 +65,10 @@
                     scheduleUpdateHash();
                 };
 
-                controlToggler.onclick = toggleControlsForm;
+                controlToggler.onclick = function (e) {
+                    toggleControlsForm();
+                    return false;
+                }
 
                 controlsForm.onsubmit = function(){updateFractalViewer();return false;};
 
@@ -191,8 +194,7 @@
         <div id="controls">
             <a href="#" id="controlToggler">+controls</a>
             <form id="controlsForm">
-                <a href="javascript:window.open(exportToPNG(),'_newtab');">export_to_png</a>
-                <br/><br/>
+                <br/>
                 <input id="iterControl" value="500" min="1" step="1" size="6" type="number"/>
                 <label for="iterControl">max iterations</label>
                 <br/>
